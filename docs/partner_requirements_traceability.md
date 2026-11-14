@@ -1,0 +1,64 @@
+# Partner requirements traceability
+
+Status: **Done** = implemented and exercised, **Partial** = implemented with a stated gap, **Not done**.
+
+## Prototype requirements (challenge brief)
+
+| # | Requirement | Status | Where | Evidence |
+|---|---|---|---|---|
+| 1 | Baseline profiles for at least three companies from websites and public sources | Done | Company DNA; `agents/company_agent.py` | 56 directory profiles; 5 with own-website evidence |
+| 2 | Show evidence; distinguish facts from inferred interests | Done | Company DNA tabs "Verified facts" / "Inferred interests" | 295 facts, all with URL and excerpt; 97 inferences stored separately |
+| 3 | User can review and refine a profile | Done | Company DNA → Review and refine | Persisted with revision history; verified through the UI |
+| 4 | Opportunities from at least two distinct public sources | Done | Opportunity Radar | Vinnova, OpenAlex, Blue Science Park, Marine Technology Center |
+| 5 | Different recommendations for different profiles | Done | Home, Radar, Company DNA → Recommendations | No two companies share a top-5 list |
+| 6 | Source links and relevant dates | Done | Every card | Link, published date or deadline, retrieval date |
+| 7 | Appropriate response to relevant, unrelated and override requests | Done | Home → Ask the assistant | Browser run and `tests/test_boundaries.py` |
+| 8 | Clearly label simulated data or functionality | Done | Sidebar, Staff View, assistant box | Simulated sign-in and rule-based assistant labelled; no simulated data stored |
+
+## Profile content
+
+| Requirement | Status | Note |
+|---|---|---|
+| What the company does, products and services | Done | Directory description and website sentences |
+| Technologies, expertise, application areas | Done | 37-capability taxonomy with application domains |
+| Markets, industries, customer groups | Partial | Industry always; markets only when stated with recognised wording |
+| Geographical focus | Partial | Location always; stated reach rarely captured |
+| Stated priorities, projects, collaborations | Partial | Captured when literally stated; few hits |
+| Topics that may be relevant | Done | Inferred interests |
+| Source links and retrieval date | Done | |
+| Flag missing or uncertain information | Done | "Missing or uncertain information" on each profile |
+| Do not infer confidential plans | Done | Only public pages are read; inferences limited to application areas implied by evidenced capabilities |
+
+## Monitoring areas
+
+| Area | Status | Note |
+|---|---|---|
+| Funding | Done | Vinnova calls with purpose, deadline, "who can apply" text, potential match vs eligibility |
+| Testing opportunities | Done | BSP and MTC environments, match explanation and next step; access terms not published |
+| Events | Partial | Format, audience, date, place parsed; all dated events were past at retrieval, so only recurring formats are offered |
+| Knowledge and trends | Partial | Research (OpenAlex) and regional news (BSP, MTC); no industry news; no "what changed" narrative |
+| Personalised member monitoring | Done (prototype) | Matching, refinement, feedback, potential connections; scheduled monitoring with change events (`nexus/monitor.py`); "Read the sources live" on each profile shows what changed since the stored profile |
+| Presentation and interaction | Done | A personalised paper per member (front page "Latest"), kept current automatically while the site runs, the radar, and Ask EchoRadar (conversational, answers built from records) |
+
+## Boundaries
+
+| Rule | Status | Where |
+|---|---|---|
+| Out-of-scope: explain remit and redirect | Done | `boundary_guard.classify_request` |
+| Unclear connection: ask a focused clarification question | Done | Category `needs_clarification` |
+| External content never treated as instructions | Done | `filter_untrusted` sets instruction-like sentences aside before extraction (shown live as the "Boundary filter" step of the profile check); by default no language model reads web text |
+| Role persistence across follow-ups and role requests | Done | Per-turn classification; role requests blocked |
+| No disclosure of other companies' non-public data | Done | `security/privacy.py` |
+| Distinguish information from advice, eligibility decisions, commitments | Done | Disclaimer on results; eligibility questions escalated |
+| Refer human decisions to staff | Done | Category `escalation` with the public contact route |
+| Finding support or contact routes within Blue Science Park | Done | Question router: contact, location, opening hours, staff and membership questions get the park's contact page; what EchoRadar does not store is said, not guessed |
+| Explain the boundaries and demonstrate that they work | Done | `docs/architecture.md` (how); Evaluation page, "Quality and boundary check": 60 labelled questions run through the real pipeline, 60 of 60 handled as labelled on 2026-11-14 (labels written by the team) |
+
+## Deliverables
+
+| Deliverable | Where |
+|---|---|
+| Working demo | `python -m api` then http://localhost:8000; `docs/demo_script.md` |
+| Solution explanation | `README.md`, `docs/architecture.md`, `docs/innovation_methodology.md` |
+| Quality and boundary check | Evaluation page, first tab: interaction limits (60 questions), profile accuracy (40 sampled facts checked against their quotes: 36 supported, 4 partly, 0 wrong), source traceability (all 292 facts with URL and excerpt), recommendation relevance (baseline comparison, with its caveat); `docs/technical_validation.md` |
+| Handover package | Code, setup instructions, `docs/known_limitations.md`, `docs/feasibility.md` |

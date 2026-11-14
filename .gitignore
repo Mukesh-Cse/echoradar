@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+
+# Local Claude configuration and guidance
+/.claude/
+/CLAUDE.md
+data/models/
+data/nexus_test*.db
+.pytest_cache/
+NEXUS_local_package.zip
+
+node_modules/
+web/dist/
+data/test_results.xml
+data/nexus_before_*.db
